@@ -3,20 +3,23 @@ from conans import ConanFile, CMake
 
 class Nghttp2Conan(ConanFile):
     name = "nghttp2"
-    version = "1.27.90"
+    version = "1.30.90"
     license = "MIT"
-    url = "https://github.com/nghttp2/nghttp2"
+    url = "https://github.com/odant/nghttp2"
     settings = "os", "compiler", "build_type", "arch"
     generators = "cmake"
     requires = "zlib/[>1.2.3]@odant/stable", \
                "openssl/1.1.0f@odant/prebuild"
     build_requires = "boost_libraries/[>1.65.0]@odant/prebuild"
-    exports_sources = "src/*", \
-                      "CMakeLists.txt"
+    exports_sources = "src/*", "CMakeLists.txt"
+    no_copy_source = True
     build_policy = "missing"
 
+    def configure(self):
+        pass
+
     def build(self):
-        cmake = CMake(self, parallel=True)
+        cmake = CMake(self)
         cmake.configure()
         cmake.build()
 
