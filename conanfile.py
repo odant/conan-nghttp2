@@ -1,22 +1,42 @@
 from conans import ConanFile, CMake
+from conans.errors import ConanException
+
+
+def get_safe(options, name):
+    try:
+        return getattr(options, name, None)
+    except ConanException:
+        return None
 
 
 class Nghttp2Conan(ConanFile):
     name = "nghttp2"
     version = "1.30.90"
     license = "MIT"
-    url = "https://github.com/odant/nghttp2"
-    settings = "os", "compiler", "build_type", "arch"
+    description = "nghttp2 is an implementation of HTTP/2 and its header compression algorithm HPACK in C"
+    url = "https://github.com/odant/conan-nghttp2"
+    settings = {
+        "os": ["Windows", "Linux"],
+        "compiler": ["Visual Studio", "gcc"],
+        "build_type": ["Debug", "Release"],
+        "arch": ["x86_64", "x86"]
+    }
+    options = {
+        "shared": [True],
+        "fPIC": [True, False]
+    }
+    default_options = "shared=True", "fPIC=True"
     generators = "cmake"
-    requires = "zlib/[>1.2.3]@odant/stable", \
-               "openssl/1.1.0f@odant/prebuild"
-    build_requires = "boost_libraries/[>1.65.0]@odant/prebuild"
     exports_sources = "src/*", "CMakeLists.txt"
     no_copy_source = True
     build_policy = "missing"
 
-    def configure(self):
-        pass
+    def requirements(self):
+        self.requires("openssl/[~=1.1.0g]@%s/testing" % self.user)
+        self.requires("boost/[~=1.66.0]@%s/testing" % self.user)
+
+    def build_requirements(self):
+        self.build_requires("zlib/[~=1.2.11]@%s/stable" % self.user)
 
     def build(self):
         cmake = CMake(self)
@@ -36,11 +56,11 @@ class Nghttp2Conan(ConanFile):
         self.copy("*.dylib", dst="lib", keep_path=False)
         self.copy("*.a", dst="lib", keep_path=False, excludes="*http-parser*")
 
-        if self.settings.os == "Windows" and self.settings.build_type == "Release":
-            signtool = '"C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\bin\\signtool"'
-            params =  "sign /a /t http://timestamp.verisign.com/scripts/timstamp.dll"
-            self.run("{} {} {}\\bin\\{}".format(signtool, params, self.package_folder, "nghttp2.dll"))
-            self.run("{} {} {}\\bin\\{}".format(signtool, params, self.package_folder, "nghttp2_asio.dll"))
+#        if self.settings.os == "Windows" and self.settings.build_type == "Release":
+#            signtool = '"C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\bin\\signtool"'
+#            params =  "sign /a /t http://timestamp.verisign.com/scripts/timstamp.dll"
+#            self.run("{} {} {}\\bin\\{}".format(signtool, params, self.package_folder, "nghttp2.dll"))
+#            self.run("{} {} {}\\bin\\{}".format(signtool, params, self.package_folder, "nghttp2_asio.dll"))
         
     def package_info(self):
         self.cpp_info.libs = ["nghttp2", "nghttp2_asio"]
