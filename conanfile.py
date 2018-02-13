@@ -40,6 +40,13 @@ class Nghttp2Conan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
+        #if self.settings.os == "Windows" and self.settings.compiler == "Visual Studio":
+        #    _win32_winnt = "0x0600" # Default Windows Vista
+        #    toolset = str(self.settings.compiler.get_safe("toolset"))
+        #    if toolset.endswith("_xp"):
+        #        _win32_winnt = "0x0502" if self.settings.arch == "x86_64" else "0x0501"
+        #    cmake.definitions["CMAKE_CXX_FLAGS:STRING"] = "/D WIN32 /D _WINDOWS /D_WIN32_WINNT=%s" % _win32_winnt
+        #    cmake.definitions["CMAKE_C_FLAGS:STRING"] = "/D WIN32 /D _WINDOWS /D_WIN32_WINNT=%s" % _win32_winnt
         cmake.configure()
         cmake.build()
 
