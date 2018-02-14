@@ -1,5 +1,6 @@
-from conans import ConanFile, CMake
+from conans import ConanFile, CMake, tools
 from conans.errors import ConanException
+import os, glob
 
 
 def get_safe(options, name):
@@ -23,9 +24,10 @@ class Nghttp2Conan(ConanFile):
     }
     options = {
         "shared": [True],
-        "fPIC": [True, False]
+        "fPIC": [True, False],
+        "dll_sign": [True, False]
     }
-    default_options = "shared=True", "fPIC=True"
+    default_options = "shared=True", "fPIC=True", "dll_sign=True"
     generators = "cmake"
     exports_sources = "src/*", "CMakeLists.txt"
     no_copy_source = True
@@ -37,6 +39,7 @@ class Nghttp2Conan(ConanFile):
 
     def build_requirements(self):
         self.build_requires("zlib/[~=1.2.11]@%s/stable" % self.user)
+        self.build_requires("find_windows_signtool/[~=1.0]@%s/stable" % self.user)
 
     def build(self):
         cmake = CMake(self)
@@ -62,12 +65,16 @@ class Nghttp2Conan(ConanFile):
         self.copy("*.so", dst="lib", keep_path=False)
         self.copy("*.dylib", dst="lib", keep_path=False)
         self.copy("*.a", dst="lib", keep_path=False, excludes="*http-parser*")
-
-#        if self.settings.os == "Windows" and self.settings.build_type == "Release":
-#            signtool = '"C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\bin\\signtool"'
-#            params =  "sign /a /t http://timestamp.verisign.com/scripts/timstamp.dll"
-#            self.run("{} {} {}\\bin\\{}".format(signtool, params, self.package_folder, "nghttp2.dll"))
-#            self.run("{} {} {}\\bin\\{}".format(signtool, params, self.package_folder, "nghttp2_asio.dll"))
+        # Sign DLL
+        if get_safe(self.options, "dll_sign"):
+            with tools.pythonpath(self):
+                from find_windows_signtool import find_signtool
+                signtool = '"' + find_signtool(str(self.settings.arch)) + '"'
+                params =  "sign /a /t http://timestamp.verisign.com/scripts/timestamp.dll"
+                pattern = os.path.join(self.package_folder, "bin", "*.dll")
+                for fpath in glob.glob(pattern):
+                    self.output.info("Sign %s" % fpath)
+                    self.run("%s %s %s" %(signtool, params, fpath))
         
     def package_info(self):
         self.cpp_info.libs = ["nghttp2", "nghttp2_asio"]
