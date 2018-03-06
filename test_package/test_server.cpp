@@ -1,6 +1,9 @@
 #include <nghttp2/nghttp2ver.h>
 #include <nghttp2/asio_http2_server.h>
 
+#include <iostream>
+#include <cstdlib>
+
 using namespace nghttp2::asio_http2;
 using namespace nghttp2::asio_http2::server;
 
@@ -22,5 +25,14 @@ int main(int, char**)
         res.end(file_generator("index.html"));
     });
 
-    return 0;
+    const bool async = true;
+    if ( server.listen_and_serve(ec, "localhost", "3000", async) ) {
+        std::cerr << "Error: " << ec.message() << std::endl;
+        std::exit(EXIT_FAILURE);
+    }
+
+    server.stop();
+    server.join();
+
+    return EXIT_SUCCESS;
 }
