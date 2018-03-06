@@ -34,6 +34,9 @@ class Nghttp2Conan(ConanFile):
     build_policy = "missing"
 
     def configure(self):
+        # Only C++11
+        if self.settings.compiler.get_safe("libcxx") == "libstdc++":
+            raise ConanException("This package is only compatible with libstdc++11")
         # Sign only shared on Windows
         if self.settings.os != "Windows" or not self.options.shared:
             del self.options.dll_sign
