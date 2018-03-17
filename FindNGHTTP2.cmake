@@ -86,13 +86,17 @@ if(NGHTTP2_FOUND)
                     INTERFACE_LINK_LIBRARIES NGHTTP2::nghttp2
                 )
 
-             if(TARGET OpenSSL::SSL)
+                if(TARGET Boost::boost)
+                    set_property(TARGET NGHTTP2::asio
+                        APPEND PROPERTY INTERFACE_LINK_LIBRARIES Boost::boost
+                    )
+                endif()
 
-                 set_property(TARGET NGHTTP2::asio
-                    APPEND PROPERTY INTERFACE_LINK_LIBRARIES OpenSSL::SSL
-                 )
-
-             endif()
+                if(TARGET OpenSSL::SSL)
+                    set_property(TARGET NGHTTP2::asio
+                        APPEND PROPERTY INTERFACE_LINK_LIBRARIES OpenSSL::SSL
+                    )
+                endif()
 
             endif()
 

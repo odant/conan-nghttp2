@@ -23,11 +23,13 @@ add_test(
 )
 
 # Common imported targets
+find_package(Threads REQUIRED)
+find_package(Boost REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(NGHTTP2 REQUIRED COMPONENTS asio)
 
 add_executable(test_server test_server.cpp)
-target_link_libraries(test_server NGHTTP2::asio)
+target_link_libraries(test_server NGHTTP2::asio Threads::Threads)
 set_target_properties(test_server
     PROPERTIES
     INSTALL_RPATH "$ORIGIN"
