@@ -65,17 +65,20 @@ class Nghttp2Conan(ConanFile):
 
     def package(self):
         self.copy("FindNGHTTP2.cmake", dst=".", src=".")
+        # Headers
         self.copy("*.h", dst="include", src="src/src/includes")
         self.copy("*.h", dst="include", src="src/lib/includes")
+        # Libraries
         self.copy("*.lib", dst="lib", keep_path=False, excludes="*http-parser*")
         self.copy("*.dll", dst="bin", keep_path=False)
+        self.copy("*.so", dst="lib", keep_path=False)
+        self.copy("*.dylib", dst="lib", keep_path=False)
+        self.copy("*.a", dst="lib", keep_path=False, excludes="*http-parser*")
+        # PDB
         self.copy("*nghttp2.pdb", dst="bin", keep_path=False)
         self.copy("*nghttp2d.pdb", dst="bin", keep_path=False)
         self.copy("*nghttp2_asio.pdb", dst="bin", keep_path=False)
         self.copy("*nghttp2_asiod.pdb", dst="bin", keep_path=False)
-        self.copy("*.so", dst="lib", keep_path=False)
-        self.copy("*.dylib", dst="lib", keep_path=False)
-        self.copy("*.a", dst="lib", keep_path=False, excludes="*http-parser*")
         # Sign DLL
         if get_safe(self.options, "dll_sign"):
             with tools.pythonpath(self):
