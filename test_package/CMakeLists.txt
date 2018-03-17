@@ -24,7 +24,7 @@ add_test(
 
 # Common imported targets
 find_package(Threads REQUIRED)
-find_package(Boost REQUIRED)
+find_package(Boost REQUIRED COMPONENTS system)
 find_package(OpenSSL REQUIRED)
 find_package(NGHTTP2 REQUIRED COMPONENTS asio)
 
