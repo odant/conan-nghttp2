@@ -86,9 +86,9 @@ if(NGHTTP2_FOUND)
                     INTERFACE_LINK_LIBRARIES NGHTTP2::nghttp2
                 )
 
-                if(TARGET Boost::boost)
+                if(TARGET Boost::system)
                     set_property(TARGET NGHTTP2::asio
-                        APPEND PROPERTY INTERFACE_LINK_LIBRARIES Boost::boost
+                        APPEND PROPERTY INTERFACE_LINK_LIBRARIES Boost::system
                     )
                 endif()
 
