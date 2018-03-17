@@ -29,7 +29,7 @@ class Nghttp2Conan(ConanFile):
     }
     default_options = "shared=True", "fPIC=True", "dll_sign=True"
     generators = "cmake"
-    exports_sources = "src/*", "CMakeLists.txt"
+    exports_sources = "src/*", "CMakeLists.txt", "FindNGHTTP2.cmake"
     no_copy_source = True
     build_policy = "missing"
 
@@ -64,6 +64,7 @@ class Nghttp2Conan(ConanFile):
         cmake.build()
 
     def package(self):
+        self.copy("FindNGHTTP2.cmake", dst=".", src=".")
         self.copy("*.h", dst="include", src="src/src/includes")
         self.copy("*.h", dst="include", src="src/lib/includes")
         self.copy("*.lib", dst="lib", keep_path=False, excludes="*http-parser*")
