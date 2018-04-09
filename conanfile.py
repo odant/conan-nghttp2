@@ -42,7 +42,7 @@ class Nghttp2Conan(ConanFile):
             del self.options.dll_sign
 
     def requirements(self):
-        self.requires("openssl/[~=1.1.0g]@%s/testing" % self.user)
+        self.requires("openssl/[~=1.1.0g]@%s/stable" % self.user)
         self.requires("boost/[~=1.66.0]@%s/testing" % self.user)
 
     def build_requirements(self):
