@@ -9,7 +9,7 @@ find_path(NGHTTP2_INCLUDE_DIR
 )
 
 find_library(NGHTTP2_LIBRARY
-    NAMES nghttp2 nghttp2d
+    NAMES nghttp2 nghttp2d nghttp232 nghttp232d nghttp264 nghttp264d
     PATHS ${CONAN_LIB_DIRS_NGHTTP2}
     NO_DEFAULT_PATH
 )
@@ -67,7 +67,7 @@ if(NGHTTP2_FOUND)
     if(_enable_asio)
 
         find_library(NGHTTP2_ASIO_LIBRARY
-            NAMES nghttp2_asio nghttp2_asiod
+            NAMES nghttp2_asio nghttp2_asiod nghttp2_asio32 nghttp2_asio32d nghttp2_asio64 nghttp2_asio64d
             PATHS ${CONAN_LIB_DIRS_NGHTTP2}
             NO_DEFAULT_PATH
         )
