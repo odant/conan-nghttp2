@@ -1,8 +1,14 @@
+# nghttp2 Conan package
+# Dmitriy Vetutnev, Odant, 2018
+
+
 import platform, os
 from copy import deepcopy
 from conan.packager import ConanMultiPackager
 
+
 package_name = "nghttp2"
+
 
 # Common settings
 username = "odant" if "CONAN_USERNAME" not in os.environ else None
@@ -18,8 +24,10 @@ if "CONAN_VISUAL_TOOLSETS" in os.environ:
     visual_toolsets = [s.strip() for s in os.environ["CONAN_VISUAL_TOOLSETS"].split(",")]
 dll_sign = False if "CONAN_DISABLE_DLL_SIGN" in os.environ else True
 
+
 def vs_get_toolsets(compiler_version):
     return visual_toolsets if not visual_toolsets is None else visual_default_toolsets.get(compiler_version)
+
 
 def vs_add_toolset(builds):
     result = []
@@ -34,6 +42,7 @@ def vs_add_toolset(builds):
                 result.append([settings, options, env_vars, build_requires, reference])
     return result
 
+
 def add_dll_sign(builds):
     result = []
     for settings, options, env_vars, build_requires, reference in builds:
@@ -42,6 +51,7 @@ def add_dll_sign(builds):
         options[opt_name] = dll_sign
         result.append([settings, options, env_vars, build_requires, reference])
     return result
+
 
 def filter_libcxx(builds):
     result = []
@@ -76,4 +86,3 @@ if __name__ == "__main__":
             build_requires=build_requires
         )
     builder.run()
-

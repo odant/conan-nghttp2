@@ -1,3 +1,7 @@
+# nghttp2 Conan package
+# Dmitriy Vetutnev, Odant, 2018
+
+
 from conans import ConanFile, CMake, tools
 from conans.errors import ConanException
 import os, glob

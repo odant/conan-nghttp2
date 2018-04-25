@@ -1,14 +1,21 @@
+// Test for nghttp2 Conan package
+// Dmitriy Vetutnev, Odant, 2018
+
+
 #include <nghttp2/nghttp2ver.h>
 #include <nghttp2/asio_http2_server.h>
+
 
 #include <iostream>
 #include <cstdlib>
 
+
 using namespace nghttp2::asio_http2;
 using namespace nghttp2::asio_http2::server;
 
-int main(int, char**)
-{
+
+int main(int, char**) {
+
     boost::system::error_code ec;
     boost::asio::ssl::context tls(boost::asio::ssl::context::sslv23);
 

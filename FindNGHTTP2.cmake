@@ -1,5 +1,6 @@
-# FindNGHTTP2.cmake for Conan package manager
+# nghttp2 Conan package manager
 # Dmitriy Vetutnev, Odant, 2018
+
 
 find_path(NGHTTP2_INCLUDE_DIR
     NAMES nghttp2/nghttp2.h
@@ -13,6 +14,7 @@ find_library(NGHTTP2_LIBRARY
     NO_DEFAULT_PATH
 )
 
+
 if(NGHTTP2_INCLUDE_DIR AND EXISTS ${NGHTTP2_INCLUDE_DIR}/nghttp2/nghttp2ver.h)
 
     file(STRINGS ${NGHTTP2_INCLUDE_DIR}/nghttp2/nghttp2ver.h DEFINE_NGHTTP2_VERSION REGEX "^#define NGHTTP2_VERSION \"[^\"]*\"$")
@@ -24,11 +26,13 @@ if(NGHTTP2_INCLUDE_DIR AND EXISTS ${NGHTTP2_INCLUDE_DIR}/nghttp2/nghttp2ver.h)
 
 endif()
 
+
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(NGHTTP2
     REQUIRED_VARS NGHTTP2_LIBRARY NGHTTP2_INCLUDE_DIR
     VERSION_VAR NGHTTP2_VERSION_STRING
 )
+
 
 if(NGHTTP2_FOUND)
 
