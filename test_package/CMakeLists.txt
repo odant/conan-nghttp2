@@ -1,12 +1,20 @@
+# Test for nghttp2 Conan package
+# Dmitriy Vetutnev, Odant, 2018
+
+
 project(PackageTest CXX)
 cmake_minimum_required(VERSION 3.0)
+
 
 include(${CMAKE_CURRENT_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
 
+
 enable_testing()
 
+
 file(COPY selfsigned.crt selfsigned.key index.html DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/bin)
+
 
 # Conan imported targets
 add_executable(test_server_CONAN_PKG test_server.cpp)
@@ -21,6 +29,7 @@ add_test(
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin
     COMMAND test_server_CONAN_PKG
 )
+
 
 # Common imported targets
 find_package(Threads REQUIRED)
@@ -40,4 +49,3 @@ add_test(
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin
     COMMAND test_server
 )
-

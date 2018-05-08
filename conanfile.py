@@ -1,3 +1,7 @@
+# nghttp2 Conan package
+# Dmitriy Vetutnev, Odant, 2018
+
+
 from conans import ConanFile, CMake, tools
 from conans.errors import ConanException
 import os, glob
@@ -77,8 +81,12 @@ class Nghttp2Conan(ConanFile):
         # PDB
         self.copy("*nghttp2.pdb", dst="bin", keep_path=False)
         self.copy("*nghttp2d.pdb", dst="bin", keep_path=False)
+        self.copy("*nghttp264.pdb", dst="bin", keep_path=False)
+        self.copy("*nghttp264d.pdb", dst="bin", keep_path=False)
         self.copy("*nghttp2_asio.pdb", dst="bin", keep_path=False)
         self.copy("*nghttp2_asiod.pdb", dst="bin", keep_path=False)
+        self.copy("*nghttp2_asio64.pdb", dst="bin", keep_path=False)
+        self.copy("*nghttp2_asio64d.pdb", dst="bin", keep_path=False)
         # Sign DLL
         if get_safe(self.options, "dll_sign"):
             import windows_signtool
@@ -92,11 +100,15 @@ class Nghttp2Conan(ConanFile):
                     self.run(cmd)
         
     def package_info(self):
+        # Libraries
         self.cpp_info.libs = ["nghttp2", "nghttp2_asio"]
-
-        if (self.settings.os == "Windows" and self.settings.compiler == "Visual Studio"):
-            self.cpp_info.defines = ["NOMINMAX", "ssize_t=int"]
+        if self.settings.os == "Windows" and self.settings.compiler == "Visual Studio":
+            if self.settings.arch == "x86_64":
+                self.cpp_info.libs[0] += "64"
+                self.cpp_info.libs[1] += "64"
             if self.settings.build_type == "Debug":
                 self.cpp_info.libs[0] += "d"
                 self.cpp_info.libs[1] += "d"
-
+        # Defines
+        if self.settings.os == "Windows" and self.settings.compiler == "Visual Studio":
+            self.cpp_info.defines = ["NOMINMAX", "ssize_t=int"]
