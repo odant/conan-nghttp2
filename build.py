@@ -59,6 +59,14 @@ def filter_libcxx(builds):
         if settings["compiler.libcxx"] == "libstdc++11":
             result.append([settings, options, env_vars, build_requires, reference])
     return result
+    
+
+def filter_shared(builds):
+    result = []
+    for settings, options, env_vars, build_requires, reference in builds:
+        if options["%s:shared" % package_name] == True:
+            result.append([settings, options, env_vars, build_requires, reference])
+    return result
 
 
 if __name__ == "__main__":
@@ -76,6 +84,7 @@ if __name__ == "__main__":
         builds = add_dll_sign(builds)
     if platform.system() == "Linux":
         builds = filter_libcxx(builds)
+    builds = filter_shared(builds)
     # Replace build configurations
     builder.items = []
     for settings, options, env_vars, build_requires, _ in builds:
