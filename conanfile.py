@@ -20,7 +20,7 @@ class Nghttp2Conan(ConanFile):
         "os": ["Windows", "Linux"],
         "compiler": ["Visual Studio", "gcc"],
         "build_type": ["Debug", "Release"],
-        "arch": ["x86_64", "x86"]
+        "arch": ["x86_64", "x86", "mips"]
     }
     options = {
         "shared": [True],
