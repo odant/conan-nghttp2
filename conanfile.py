@@ -47,7 +47,7 @@ class Nghttp2Conan(ConanFile):
 
     def requirements(self):
         self.requires("openssl/[~=1.1.0g]@%s/stable" % self.user)
-        self.requires("boost/[~=1.66.0]@%s/testing" % self.user)
+        self.requires("boost/[>=1.54.0]@%s/testing" % self.user)
 
     def build_requirements(self):
         self.build_requires("zlib/[~=1.2.11]@%s/stable" % self.user)
