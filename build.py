@@ -45,6 +45,7 @@ def add_dll_sign(builds):
     for settings, options, env_vars, build_requires, reference in builds:
         options = deepcopy(options)
         options["nghttp2:dll_sign"] = dll_sign
+        options["openssl:dll_sign"] = dll_sign
         options["icu:dll_sign"] = dll_sign
         result.append([settings, options, env_vars, build_requires, reference])
     return result
