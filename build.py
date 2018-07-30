@@ -61,7 +61,7 @@ def filter_libcxx(builds):
 def filter_shared(builds):
     result = []
     for settings, options, env_vars, build_requires, reference in builds:
-        if options["%s:shared" % package_name] == True:
+        if options["nghttp2:shared"] == True:
             result.append([settings, options, env_vars, build_requires, reference])
     return result
 
