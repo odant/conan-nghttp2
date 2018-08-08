@@ -1,0 +1,90 @@
+# Notes:
+#   - Minimal appveyor.yml file is an empty file. All sections are optional.
+#   - Indent each level of configuration with 2 spaces. Do not use tabs!
+#   - All section names are case-sensitive.
+#   - Section names should be unique on each level.
+
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
+
+# branches to build
+branches:
+  # blacklist
+  except:
+    - gh-pages
+
+# Do not build on tags (GitHub only)
+skip_tags: true
+
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+
+configuration:
+  - Debug
+  - Release
+
+environment:
+  matrix:
+   - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+     platform: x64
+     CMAKE_GENERATOR: Visual Studio 14 2015 Win64
+     BOOST_ROOT: C:\Libraries\boost_1_63_0
+
+   - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+     platform: x86
+     CMAKE_GENERATOR: Visual Studio 14 2015
+     BOOST_ROOT: C:\Libraries\boost_1_63_0
+
+   - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+     platform: x64
+     CMAKE_GENERATOR: Visual Studio 15 2017 Win64
+     BOOST_ROOT: C:\Libraries\boost_1_64_0
+
+   - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+     platform: x86
+     CMAKE_GENERATOR: Visual Studio 15 2017
+     BOOST_ROOT: C:\Libraries\boost_1_64_0
+
+# scripts that run after cloning repository
+install:
+  - cmd: echo %CMAKE_GENERATOR%
+  - cmd: echo %APPVEYOR_BUILD_FOLDER%
+  - cmd: echo %CONFIGURATION%
+  - cmd: echo %PATH%
+
+  # install zlib
+  - cmd: mkdir c:\zlib
+  - appveyor DownloadFile "https://github.com/madler/zlib/archive/v1.2.11.zip" -FileName zlib.zip
+  - 7z x zlib.zip -oC:\zlib
+  - cmd: mkdir C:\zlib\build
+  - cmd: mkdir C:\zlib\install
+  - cmd: cd C:\zlib\build
+  - cmd: cmake -G "%CMAKE_GENERATOR%" -D CMAKE_INSTALL_PREFIX=C:\zlib\install C:\zlib\zlib-1.2.11
+  - cmd: cmake --build . --config %CONFIGURATION% --target INSTALL
+  - cmd: set PATH=%PATH%;C:\zlib\install\bin
+  
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+
+# scripts to run before build
+before_build:
+  - cmd: mkdir C:\build
+  - cmd: cd C:\build
+  - cmd: cmake -G "%CMAKE_GENERATOR%" -D ZLIB_ROOT=C:\zlib\install -D BOOST_ROOT=%BOOST_ROOT% -D Boost_USE_STATIC_LIBS=ON -D ENABLE_ASIO_LIB=ON %APPVEYOR_BUILD_FOLDER%
+
+# scripts to run *after* solution is built and *before* automatic packaging occurs (web apps, NuGet packages, Azure Cloud Services)
+# before_package:
+
+# scripts to run after build
+# after_build:
+
+# to run your custom scripts instead of automatic MSBuild
+build_script:
+  - cmd: cmake --build . --config %CONFIGURATION%
+  - cmd: ctest --output-on-failure --build-config %CONFIGURATION%
+
+# to disable automatic builds
+# build: off
