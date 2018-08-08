@@ -33,7 +33,7 @@ class Nghttp2Conan(ConanFile):
     }
     default_options = "shared=True", "fPIC=True", "dll_sign=True"
     generators = "cmake"
-    exports_sources = "src/*", "CMakeLists.txt", "FindNGHTTP2.cmake"
+    exports_sources = "src/*", "CMakeLists.txt", "FindNGHTTP2.cmake", "version.patch"
     no_copy_source = True
     build_policy = "missing"
 
@@ -54,6 +54,9 @@ class Nghttp2Conan(ConanFile):
         #
         if get_safe(self.options, "dll_sign"):
             self.build_requires("windows_signtool/[~=1.0]@%s/stable" % self.user)
+
+    def source(self):
+        tools.patch(patch_file="version.patch")
 
     def build(self):
         cmake = CMake(self)
